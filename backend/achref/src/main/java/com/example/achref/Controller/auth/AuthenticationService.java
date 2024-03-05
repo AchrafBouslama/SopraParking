@@ -15,6 +15,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
+
 @Service
 @RequiredArgsConstructor
 
@@ -22,8 +24,9 @@ public class AuthenticationService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
+    private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
-    public  AuthenticationResponse register(RegisterRequest request) {
+  /*  public  AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -38,6 +41,29 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+*/
+  public AuthenticationResponse register(RegisterRequest request) {
+      String generatedPassword = generateRandomPassword();
+      var user = User.builder()
+              .firstname(request.getFirstname())
+              .lastname(request.getLastname())
+              .email(request.getEmail())
+              .password(passwordEncoder.encode(generatedPassword)) // Encodez le mot de passe généré
+              .role(Role.USER)
+              .build();
+      userRepository.save(user);
+
+      // Envoyez le mot de passe généré par e-mail
+      emailService.sendPasswordByEmail(request.getEmail(), generatedPassword);
+
+      var jwtToken = jwtService.generateToken(user);
+      System.out.println(jwtToken);
+      return AuthenticationResponse.builder()
+              .token(jwtToken)
+              .build();
+  }
+
+
 
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
@@ -70,5 +96,20 @@ public class AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+
     }
+
+    private String generateRandomPassword() {
+        int length = 10; // Longueur du mot de passe
+        String chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+"; // Caractères autorisés dans le mot de passe
+        SecureRandom random = new SecureRandom();
+        StringBuilder sb = new StringBuilder(length);
+        for (int i = 0; i < length; i++) {
+            sb.append(chars.charAt(random.nextInt(chars.length())));
+        }
+        return sb.toString();
+    }
+
+
+
 }

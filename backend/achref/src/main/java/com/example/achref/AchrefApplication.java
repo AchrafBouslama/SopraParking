@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class AchrefApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(AchrefApplication.class, args);
     }
 
