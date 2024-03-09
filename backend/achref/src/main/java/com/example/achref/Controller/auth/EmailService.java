@@ -30,4 +30,19 @@ public class EmailService {
             e.printStackTrace(); // Gérer l'exception de manière appropriée (par exemple, en enregistrant dans un fichier journal)
         }
     }
+    public void sendPasswordResetEmail(String email, String resetLink) {
+        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage);
+
+        try {
+            helper.setTo(email);
+            helper.setSubject("Reset Your Password");
+            helper.setText("Dear User,\n\nPlease click on the following link to reset your password:\n\n"
+                    + resetLink + "\n\nRegards,\nYour Application Team");
+
+            javaMailSender.send(mimeMessage);
+        } catch (MessagingException e) {
+            e.printStackTrace(); // Gérer l'exception de manière appropriée (par exemple, en enregistrant dans un fichier journal)
+        }
+    }
 }

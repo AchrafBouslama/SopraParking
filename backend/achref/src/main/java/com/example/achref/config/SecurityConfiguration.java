@@ -29,7 +29,7 @@ public class SecurityConfiguration  {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/api/vi/auth/**","/api/vi/auth/authenticate")
+                .requestMatchers("/api/vi/auth/**","/api/vi/auth/authenticate","/api/vi/auth/reset-password")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

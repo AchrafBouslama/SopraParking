@@ -1,11 +1,13 @@
 package com.example.achref.Controller.auth;
 
+import com.example.achref.Entities.user.PasswordResetToken;
 import com.example.achref.Entities.user.Role;
 import com.example.achref.Entities.user.User;
+import com.example.achref.Repositories.PasswordResetTokenRepository;
 import com.example.achref.Repositories.UserRepository;
 import com.example.achref.config.JwtService;
 import lombok.RequiredArgsConstructor;
-import org.aspectj.weaver.ast.Var;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,6 +18,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +31,18 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
-  /*  public  AuthenticationResponse register(RegisterRequest request) {
+    @Autowired
+    private PasswordResetTokenRepository passwordResetTokenRepository;
+
+    public void createPasswordResetTokenForUser(User user, String token) {
+        PasswordResetToken passwordResetToken = new PasswordResetToken();
+        passwordResetToken.setUser(user);
+        passwordResetToken.setToken(token);
+        passwordResetToken.setExpiryDate(LocalDateTime.now().plusHours(1)); // par exemple, expire dans 1 heure
+        passwordResetTokenRepository.save(passwordResetToken);
+    }
+
+    /*  public  AuthenticationResponse register(RegisterRequest request) {
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -52,6 +68,8 @@ public class AuthenticationService {
               .role(Role.USER)
               .build();
       userRepository.save(user);
+
+
 
       // Envoyez le mot de passe généré par e-mail
       emailService.sendPasswordByEmail(request.getEmail(), generatedPassword);
@@ -109,6 +127,13 @@ public class AuthenticationService {
         }
         return sb.toString();
     }
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+
+
+
 
 
 
