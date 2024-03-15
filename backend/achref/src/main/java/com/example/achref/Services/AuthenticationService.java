@@ -1,5 +1,9 @@
-package com.example.achref.Controller.auth;
+package com.example.achref.Services;
 
+import com.example.achref.Controller.auth.AuthenticationRequest;
+import com.example.achref.Controller.auth.AuthenticationResponse;
+import com.example.achref.Controller.auth.EmailService;
+import com.example.achref.Controller.auth.RegisterRequest;
 import com.example.achref.Entities.user.PasswordResetToken;
 import com.example.achref.Entities.user.Role;
 import com.example.achref.Entities.user.User;
@@ -9,10 +13,12 @@ import com.example.achref.config.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,8 +37,15 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final EmailService emailService;
     private final AuthenticationManager authenticationManager;
+
+
+
     @Autowired
     private PasswordResetTokenRepository passwordResetTokenRepository;
+    private final UserDetailsService userDetailsService;
+
+
+
 
     public void createPasswordResetTokenForUser(User user, String token) {
         PasswordResetToken passwordResetToken = new PasswordResetToken();
@@ -57,10 +70,11 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .build();
     }
+
 */
   public AuthenticationResponse register(RegisterRequest request) {
       String generatedPassword = generateRandomPassword();
-      var user = User.builder()
+      User user = User.builder()
               .firstname(request.getFirstname())
               .lastname(request.getLastname())
               .email(request.getEmail())
@@ -102,20 +116,15 @@ public class AuthenticationService {
             throw e; // Re-throw the exception to handle it further if needed
         }
 
-        // Retrieve user details after successful authentication
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        User user = userRepository.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-
         // Generate JWT token
-        String jwtToken = jwtService.generateToken(user);
+        String jwtToken = jwtService.generateToken((UserDetails) authentication.getPrincipal());
         System.out.println("Generated JWT token: " + jwtToken);
 
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
-
     }
+
 
     private String generateRandomPassword() {
         int length = 10; // Longueur du mot de passe

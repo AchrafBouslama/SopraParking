@@ -1,5 +1,6 @@
 package com.example.achref.Entities.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -51,14 +52,18 @@ public class PasswordResetToken {
     public void setToken(String token) {
         this.token = token;
     }
+    @JsonIgnore
 
     public LocalDateTime getExpiryDate() {
         return expiryDate;
     }
+    @JsonIgnore
+
 
     public void setExpiryDate(LocalDateTime expiryDate) {
         this.expiryDate = expiryDate;
     }
+    @JsonIgnore
 
 
     public boolean isExpired() {

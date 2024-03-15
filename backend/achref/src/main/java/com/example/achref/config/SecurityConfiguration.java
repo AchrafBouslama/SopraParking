@@ -19,17 +19,19 @@ import java.beans.Customizer;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-public class SecurityConfiguration  {
+public class SecurityConfiguration   {
 
     private final JwtAuthenticationFilter jwtAuthFilter;
   private final AuthenticationProvider authenticationProvider;
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests()
-                .requestMatchers("/api/vi/auth/**","/api/vi/auth/authenticate","/api/vi/auth/reset-password")
+               .requestMatchers("/api/vi/auth/**","/api/vi/auth/authenticate","/api/vi/auth/reset-password"
+                ,"/api/users/**")
                 .permitAll()
                 .anyRequest()
                 .authenticated()

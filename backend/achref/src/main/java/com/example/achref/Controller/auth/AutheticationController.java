@@ -4,19 +4,16 @@ import com.example.achref.Entities.user.PasswordResetToken;
 import com.example.achref.Entities.user.User;
 import com.example.achref.Repositories.PasswordResetTokenRepository;
 import com.example.achref.Repositories.UserRepository;
-import jakarta.mail.MessagingException;
+import com.example.achref.Services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 
 @RestController
@@ -59,7 +56,7 @@ public class AutheticationController {
                 String resetToken = UUID.randomUUID().toString();
                 authenticationService.createPasswordResetTokenForUser(user, resetToken);
                 // Envoyez le token de réinitialisation de mot de passe par e-mail à l'utilisateur
-                String resetLink = "http://localhost:8080/api/vi/auth/reset-password?token=" + resetToken;
+                String resetLink = "http://localhost:8080/api/vi/auth/set-new-password?token=" + resetToken;
                 emailService.sendPasswordResetEmail(email, resetLink);
 
                 return ResponseEntity.ok().build();
@@ -73,8 +70,7 @@ public class AutheticationController {
 
 
     @PostMapping("/set-new-password")
-    public ResponseEntity<?> setNewPassword(@RequestParam("token") String token,
-                                            @RequestBody String newPassword) {
+    public ResponseEntity<?> setNewPassword(@RequestParam("token") String token, @RequestBody String newPassword) {
         // Valider le token de réinitialisation de mot de passe
         PasswordResetToken resetToken = passwordResetTokenRepository.findByToken(token);
         if (resetToken == null || resetToken.isExpired()) {
@@ -85,13 +81,12 @@ public class AutheticationController {
         User user = resetToken.getUser();
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+
         // Supprimer le token de réinitialisation de mot de passe
         passwordResetTokenRepository.delete(resetToken);
 
         return ResponseEntity.ok().build();
     }
-
-
 
 
 
