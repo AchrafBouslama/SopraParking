@@ -7,26 +7,23 @@ import com.example.achref.Controller.auth.RegisterRequest;
 import com.example.achref.Entities.user.PasswordResetToken;
 import com.example.achref.Entities.user.Role;
 import com.example.achref.Entities.user.User;
-import com.example.achref.Repositories.PasswordResetTokenRepository;
-import com.example.achref.Repositories.UserRepository;
+import com.example.achref.Repositories.user.PasswordResetTokenRepository;
+import com.example.achref.Repositories.user.UserRepository;
 import com.example.achref.config.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

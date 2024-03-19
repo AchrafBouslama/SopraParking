@@ -1,4 +1,4 @@
-package com.example.achref.Repositories;
+package com.example.achref.Repositories.user;
 
 import com.example.achref.Entities.user.PasswordResetToken;
 import org.springframework.data.jpa.repository.JpaRepository;

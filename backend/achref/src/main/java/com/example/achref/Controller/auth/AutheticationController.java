@@ -2,8 +2,8 @@ package com.example.achref.Controller.auth;
 
 import com.example.achref.Entities.user.PasswordResetToken;
 import com.example.achref.Entities.user.User;
-import com.example.achref.Repositories.PasswordResetTokenRepository;
-import com.example.achref.Repositories.UserRepository;
+import com.example.achref.Repositories.user.PasswordResetTokenRepository;
+import com.example.achref.Repositories.user.UserRepository;
 import com.example.achref.Services.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +16,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 
+@CrossOrigin(origins="*")
 @RestController
 @RequestMapping("/api/vi/auth")
 @RequiredArgsConstructor

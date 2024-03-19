@@ -1,15 +1,12 @@
 package com.example.achref.Services;
 
 import com.example.achref.Entities.user.User;
-import com.example.achref.Repositories.UserRepository;
+import com.example.achref.Repositories.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserProfileService {
